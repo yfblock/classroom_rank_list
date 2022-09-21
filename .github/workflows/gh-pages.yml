@@ -21,8 +21,6 @@ jobs:
           node-version: '16.x'
       - name: install pkg
         run: |
-# npm install yarn -g
-# yarn install
           cd spider && npm install
       - name: create env file
         run: |
@@ -31,21 +29,3 @@ jobs:
       - name: run test
         run: |
           cd spider && npm start
-      # - name: update classroom data
-      #   run: yarn setup
-      # - name: build pages
-      #   run: yarn build
-      # - name: save data files
-      #   run: |
-      #     git config user.name Faith
-      #     git config user.email seventanyb@gmail.com
-      #     git add .
-      #     git commit -am "updata"
-      #     git push origin main
-      # - name: GitHub Pages
-      #   uses: crazy-max/ghaction-github-pages@v3.0.0
-      #   with:
-      #     target_branch: gh-pages
-      #     build_dir: docs
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
