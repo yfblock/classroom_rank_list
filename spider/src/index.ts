@@ -1,19 +1,19 @@
 import { Octokit } from "octokit";
-import axios from "axios";
 import { assignments, AUTH_TOKEN } from "./config";
+import fetch from "node-fetch";
 const octokit = new Octokit({
     auth: AUTH_TOKEN
 })
   
 
 async function fetchAssignments(classroom: string, assigment: string, sessionToken: string) {
-    console.log(sessionToken);
-    console.log(`https://classroom.github.com/classrooms/${classroom}/assignments/${assigment}/download_grades`);
     return new Promise(async (resolve, reject) => {
+
         const url = `https://classroom.github.com/classrooms/${classroom}/assignments/${assigment}/download_grades`
-        axios.defaults.headers.common = {
-            ...axios.defaults.headers.common,
-            accept:'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+        const response = await fetch(url, {
+            headers: {
+            accept:
+                'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
             'accept-language': 'zh-CN,zh;q=0.9,en;q=0.8',
             'if-none-match': 'W/"91c8c819008d409c96ac22f96ff4029d"',
             'sec-ch-ua': '".Not/A)Brand";v="99", "Google Chrome";v="103", "Chromium";v="103"',
@@ -24,11 +24,18 @@ async function fetchAssignments(classroom: string, assigment: string, sessionTok
             'sec-fetch-site': 'none',
             'sec-fetch-user': '?1',
             'upgrade-insecure-requests': '1',
-            cookie: `_github_classroom_session=${sessionToken}`
-        }
-        const response = await axios.get(url)
-        if(response.status) {
-            console.log(response.data)
+            cookie:
+                `dotcom_user=; _github_classroom_session=${sessionToken}`
+            },
+            // referrerPolicy: 'strict-origin-when-cross-origin',
+            // body: null,
+            method: 'GET'
+        })
+    
+        if (response.ok) {
+            console.log(response.text)
+        } else {
+            reject(`download fail: ${url}`)
         }
     })
 }
