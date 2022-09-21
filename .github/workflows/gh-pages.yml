@@ -24,7 +24,7 @@ jobs:
           cd spider && npm install
       - name: create env file
         run: |
-          echo AUTH_TOKEN=${{ secrets.AUTH_TOKEN }} >> spider/.env
+          echo TOKEN=${{ secrets.AUTH_TOKEN }} >> spider/.env
           echo SESSION_TOKEN=${{ secrets.SESSION_TOKEN }} >> spider/.env
       - name: run test
         run: |
