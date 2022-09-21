@@ -1,14 +1,16 @@
 import { Octokit } from "octokit";
-import { assignments, AUTH_TOKEN } from "./config";
+import { assignment, AUTH_TOKEN, organiztion } from "./config";
 import fetch from "node-fetch";
+import { HttpsProxyAgent } from "https-proxy-agent";
+import { parse } from "csv-parse/sync";
 const octokit = new Octokit({
     auth: AUTH_TOKEN
 })
-  
+
+const proxyAgent = new HttpsProxyAgent('http://172.24.160.1:7890');
 
 async function fetchAssignments(classroom: string, assigment: string, sessionToken: string) {
     return new Promise(async (resolve, reject) => {
-
         const url = `https://classroom.github.com/classrooms/${classroom}/assignments/${assigment}/download_grades`
         const response = await fetch(url, {
             headers: {
@@ -25,25 +27,80 @@ async function fetchAssignments(classroom: string, assigment: string, sessionTok
             'sec-fetch-user': '?1',
             'upgrade-insecure-requests': '1',
             cookie:
-                `dotcom_user=; _github_classroom_session=${sessionToken}`
+                `_github_classroom_session=${sessionToken}`
             },
             // referrerPolicy: 'strict-origin-when-cross-origin',
             // body: null,
-            method: 'GET'
+            method: 'GET',
+            agent: proxyAgent
         })
     
         if (response.ok) {
-            console.log(response.text)
+            resolve(await response.text())
         } else {
             reject(`download fail: ${url}`)
         }
     })
 }
 
-async function test() {
-    // let rate_limit = await octokit.request('GET /rate_limit', {})
-    // console.log(rate_limit);
+function decodeLogFile(fileObject: any) {
+    let data = fileObject.data['content' as keyof typeof fileObject.data];
+    let encoding = fileObject.data['encoding' as keyof typeof fileObject.data];
+    let buff = Buffer.from(data, encoding);
+    return buff.toString('utf8'); 
+}
 
+async function getRepoLogFile(githubUsername: string, filename: string) {
+    try {
+        return await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
+            owner: organiztion,
+            repo: `${assignment}-${githubUsername}`,
+            path: filename,
+            ref: 'gh-pages'
+        });
+        
+    } catch (error) {
+        return undefined;
+    }
+}
+
+async function getApiRemaining() {
+    let response = await octokit.request('GET /rate_limit', {})
+    console.log('') // print a blank line
+    console.log("API详情 " + JSON.stringify(response.data.rate));
+}
+
+async function getGrade() {
+    // let value = await fetchAssignments(classroom['name'], classroom['assignments'][0], process.env['SESSION_TOKEN'] ?? "");
+    let value = `"assignment_name","assignment_url","starter_code_url","github_username","roster_identifier","student_repository_name","student_repository_url","submission_timestamp","points_awarded","points_available"
+    "oskernel","https://classroom.github.com/classrooms/113154735-os-autograding-classroom-a857a2/assignments/oskernel","https://api.github.com/repos/os-autograding/oskernel2022-byte-os","yfblock","","oskernel-yfblock","https://github.com/os-autograding/oskernel-yfblock","2022-09-18 23:59:59 UTC","74","0"
+    "oskernel","https://classroom.github.com/classrooms/113154735-os-autograding-classroom-a857a2/assignments/oskernel","https://api.github.com/repos/os-autograding/oskernel2022-byte-os","chyyuu","","oskernel-chyyuu","https://github.com/os-autograding/oskernel-chyyuu","2022-09-18 23:59:59 UTC","74","0"
+    "oskernel","https://classroom.github.com/classrooms/113154735-os-autograding-classroom-a857a2/assignments/oskernel","https://api.github.com/repos/os-autograding/oskernel2022-byte-os","shzhxh","","oskernel-shzhxh","https://github.com/os-autograding/oskernel-shzhxh","2022-09-21 23:59:59 UTC","49","0"
+    "oskernel","https://classroom.github.com/classrooms/113154735-os-autograding-classroom-a857a2/assignments/oskernel","https://api.github.com/repos/os-autograding/oskernel2022-byte-os","scPointer","","oskernel-scPointer","https://github.com/os-autograding/oskernel-scPointer","2022-09-20 23:59:59 UTC","283","0"
+    "oskernel","https://classroom.github.com/classrooms/113154735-os-autograding-classroom-a857a2/assignments/oskernel","https://api.github.com/repos/os-autograding/oskernel2022-byte-os","tkf2019","","oskernel-tkf2019","https://github.com/os-autograding/oskernel-tkf2019","2022-09-20 23:59:59 UTC","74","0"`;
+
+    let repos = parse(value, {
+        columns: true, skip_empty_lines: true, trim: true
+    })
+
+    for(let repo of repos) {
+        let githubUsername = repo['github_username'];
+        let latest = await getRepoLogFile(githubUsername, 'latest.json');
+        if(latest) {
+            let file = JSON.parse(decodeLogFile(latest));
+            let logFile = await getRepoLogFile(githubUsername, file['default']);
+            file = decodeLogFile(logFile);
+            let index = file.lastIndexOf('Points: ');
+            let points = file.substr(index);
+            console.log(`${githubUsername.padEnd(15)} ${points}`)
+            // console.log(file)
+        } else {
+            console.log(`${githubUsername.padEnd(15)} 没有找到latest.json文件   没有分数`)
+        }
+    }
+}
+
+async function test() {
     // let orgs = await octokit.request('GET /orgs/{org}/repos', {
     //     org: 'os-autograding'
     // })
@@ -78,15 +135,6 @@ async function test() {
 
     // console.log(text)
     // console.log(process.env['ORG'])
-
-    let classroom = {
-        "name": "113154735-os-autograding-classroom-a857a2",
-        "assignments": ["oskernel"],
-        "studentBlacklist": []
-    };
-    let value = await fetchAssignments(classroom['name'], classroom['assignments'][0], process.env['SESSION_TOKEN'] ?? "");
-
-    console.log(value);
 }
 
-test()
+getGrade().then(()=>getApiRemaining())
