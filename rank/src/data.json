@@ -1,1 +1,19 @@
-{"classrooms":[{"title":"os-autograding","id":"113154735-os-autograding-classroom-a857a2","desc":"","assignments":[{"id":"113154735-os-autograding-classroom-a857a2-oskernel","title":"oskernel","student_repositories":[{"name":"yfblock","avatar":"https://avatars.githubusercontent.com/u/14835777?v=4","studentInfo":{"avatar_url":"https://avatars.githubusercontent.com/u/14835777?v=4"},"classroomWorkflowId":34824229,"repo":{"id":536444492,"name":"oskernel-yfblock","default_branch":"main","owner":{"login":"os-autograding","avatar_url":"https://avatars.githubusercontent.com/u/113154735?v=4","html_url":"https://github.com/os-autograding"},"private":false,"html_url":"https://github.com/os-autograding/oskernel-yfblock","pushed_at":"2022-09-14T06:33:27Z","created_at":"2022-09-14T06:33:11Z","updated_at":"2022-09-14T06:33:28Z"},"repoURL":"https://github.com/os-autograding/oskernel-yfblock","languages":[],"branchName":"main","commitCount":0,"autoGradingJob":null,"hasSubmited":false,"isSuccess":false,"firstSubmitedAt":"","firstSuccessAt":"","latestUpdatedAt":"","executeTime":581,"submission_timestamp":"","points_awarded":"0","points_available":"100","branches":[]}]}]}],"latest_updated_at":"2022-09-15T01:03:07.565Z","apiUseCount":2}
+{
+    "available": {
+        "default": 283,
+        "main": 30
+    },
+    "grades": {
+        "yfblock": {
+            "default": 73,
+            "main": 0
+        }
+    },
+    "students": {
+        "yfblock": {
+            "avatar": "https://avatars.githubusercontent.com/u/14835777?v=4",
+            "repo_url": "https://github.com/os-autograding/oskernel-yfblock"
+        }
+    },
+    "latest_updated_at": "2022-09-15T01:03:07.565Z"
+}

@@ -96,22 +96,6 @@ const RankList = (props: IRankListProps) => {
         }
       },
       {
-        title: '最新提交状态',
-        align: 'center',
-        width: 100,
-        dataIndex: 'points_available',
-        key: 'points_available',
-        render(_text: string, record: TStudentHomework) {
-          if (record.hasSubmited) {
-            const passed =
-              Number(record.points_awarded) > 0 && record.points_awarded === record.points_available
-            return <Tag color={passed ? 'green' : 'red'}>{passed ? '成功' : '失败'}</Tag>
-          } else {
-            return '-'
-          }
-        }
-      },
-      {
         title: '版本',
         align: 'center',
         width: 100,
@@ -126,9 +110,7 @@ const RankList = (props: IRankListProps) => {
             <Button
               type="link"
               onClick={() => {
-                branch
-                  ? window.open(`${record.repoURL}/commits/${branch}`)
-                  : window.open(`${record.repoURL}/commits`)
+                window.open(`${record.repoURL}/commits`)
               }}
             >
               {count} {count > 1 ? 'commits' : 'commit'}
@@ -155,7 +137,7 @@ const RankList = (props: IRankListProps) => {
         }
       },
       {
-        title: '更新时间',
+        title: '最新提交时间',
         align: 'center',
         width: 150,
         dataIndex: 'latestUpdatedAt',
@@ -165,42 +147,6 @@ const RankList = (props: IRankListProps) => {
             return '-'
           }
           return text ? dayjs(text).fromNow() : '-'
-        }
-      },
-      {
-        title: '首次成功时间',
-        align: 'center',
-        width: 150,
-        dataIndex: 'firstSuccessAt',
-        key: 'firstSuccessAt',
-        render(text, record) {
-          if (!record.hasSubmited) {
-            return '-'
-          }
-          return text ? dayjs(text).fromNow() : '-'
-        }
-      },
-      {
-        title: 'Action',
-        align: 'center',
-        dataIndex: 'actions',
-        width: 80,
-        key: 'actions',
-        render(_text: never, record: TStudentHomework) {
-          if (!record.hasSubmited) {
-            return '-'
-          }
-          const url = record.autoGradingJob?.html_url
-          if (url) {
-            return (
-              <Icon
-                style={{ cursor: 'pointer' }}
-                symbol="icon-autowj-rz"
-                onClick={() => window.open(url)}
-              />
-            )
-          }
-          return '-'
         }
       },
       {
@@ -218,9 +164,7 @@ const RankList = (props: IRankListProps) => {
               style={{ cursor: 'pointer' }}
               symbol="icon-autogithub"
               onClick={() => {
-                branch
-                  ? window.open(`${record.repoURL}/tree/${branch}`)
-                  : window.open(record.repoURL)
+                window.open(record.repoURL)
               }}
             />
           )

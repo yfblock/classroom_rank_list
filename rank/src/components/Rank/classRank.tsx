@@ -236,12 +236,7 @@ const ClassRoomRank = (props: IProps) => {
               </div>
             </div>
             <div>
-              <span style={{ marginRight: 10 }}>
-                Github API 调用次数:
-                {props.apiUseCount && (
-                  <span style={{ marginLeft: 10, fontWeight: 'bold' }}>{props.apiUseCount}</span>
-                )}
-              </span>
+
               <span className="update-time">
                 最新数据更新时间:
                 {props.latestUpdatedAt && (
