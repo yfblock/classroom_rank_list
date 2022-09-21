@@ -1,17 +1,29 @@
 import { Octokit } from "octokit";
-import { assignment, AUTH_TOKEN, organiztion } from "./config";
+import { assignment, AUTH_TOKEN, fullOrganization, JsonData, organiztion, works } from "./config";
 import fetch from "node-fetch";
 import { HttpsProxyAgent } from "https-proxy-agent";
 import { parse } from "csv-parse/sync";
+import { buildEmptyGrades, updateAvailable, updateStudentGrades } from "./utils";
+
 const octokit = new Octokit({
     auth: AUTH_TOKEN
 })
 
+const grades: any = {};
+
 const proxyAgent = new HttpsProxyAgent('http://172.24.160.1:7890');
 
+/**
+ * Get the info of the assignment
+ * @param {string} classroom The full name of the classroom. Note: It should be got in the url.
+ * @param {string } assigment The assignment' name
+ * @param {string} sessionToken Session token for the account that is the owner of the classroom
+ * @returns The info of the assignment. It contains a list of students and their details. 
+ */
 async function fetchAssignments(classroom: string, assigment: string, sessionToken: string) {
-    return new Promise(async (resolve, reject) => {
+    return new Promise<string>(async (resolve, reject) => {
         const url = `https://classroom.github.com/classrooms/${classroom}/assignments/${assigment}/download_grades`
+        // Send a Get request
         const response = await fetch(url, {
             headers: {
             accept:
@@ -35,6 +47,7 @@ async function fetchAssignments(classroom: string, assigment: string, sessionTok
             agent: proxyAgent
         })
     
+        // If it get the result successfully.
         if (response.ok) {
             resolve(await response.text())
         } else {
@@ -43,6 +56,11 @@ async function fetchAssignments(classroom: string, assigment: string, sessionTok
     })
 }
 
+/**
+ * Decode the log file.
+ * @param fileObject It's a file object obtained by the function getRepoLogFile.
+ * @returns The value of the file.
+ */
 function decodeLogFile(fileObject: any) {
     let data = fileObject.data['content' as keyof typeof fileObject.data];
     let encoding = fileObject.data['encoding' as keyof typeof fileObject.data];
@@ -50,6 +68,13 @@ function decodeLogFile(fileObject: any) {
     return buff.toString('utf8'); 
 }
 
+/**
+ * Get the log file object in the repository.
+ * @description By default, gh-pages branch is used, and only files in the root directory can be got.
+ * @param githubUsername The github username of the student who completed the assignment.
+ * @param filename The file's name in the student repository.
+ * @returns 
+ */
 async function getRepoLogFile(githubUsername: string, filename: string) {
     try {
         return await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
@@ -64,14 +89,56 @@ async function getRepoLogFile(githubUsername: string, filename: string) {
     }
 }
 
+/**
+ * Get the usage of the api
+ * @function getApiRemaining
+ */
 async function getApiRemaining() {
     let response = await octokit.request('GET /rate_limit', {})
     console.log('') // print a blank line
     console.log("API详情 " + JSON.stringify(response.data.rate));
 }
 
+/**
+ * Get the grade of works and combine them.
+ * @param githubUsername The github username of the student who completed the assignment.
+ * @param latest The value of the latest.json. It should be a json string.
+ * @returns Json object contains work and its points.
+ */
+async function getWorksGrade(githubUsername: string, latest: any) {
+    let grade = buildEmptyGrades();
+    if(!latest) {
+        console.log(`${githubUsername.padEnd(15)} 没有找到latest.json文件   没有分数`);
+        return grade;
+    }
+
+    let file = JSON.parse(decodeLogFile(latest));
+    for(let work of works) {
+        // If it not has the log file, then continue.
+        if(!file[work]) continue;
+
+        // Get the value of the work's log file.
+        let logFile = await getRepoLogFile(githubUsername, file[work]);
+        file = decodeLogFile(logFile);
+
+        // Handle the result
+        let index = file.lastIndexOf('Points: ');
+        let pointString = file.substr(index).replace('Points: ', '');
+        let points = pointString.split('/').map((item: string, _index: number)=>parseFloat(item));
+        
+        // Update available points by work name.
+        updateAvailable(work, points[1]);
+
+        // Store grade to points variable.
+        if(work in grade) grade[work] = points[0];
+        console.log(`${githubUsername.padEnd(15)} ${points}`)
+    }
+    return grade;
+}
+
+
 async function getGrade() {
-    // let value = await fetchAssignments(classroom['name'], classroom['assignments'][0], process.env['SESSION_TOKEN'] ?? "");
+    // let value = await fetchAssignments(fullOrganization, assignment, process.env['SESSION_TOKEN'] ?? "");
     let value = `"assignment_name","assignment_url","starter_code_url","github_username","roster_identifier","student_repository_name","student_repository_url","submission_timestamp","points_awarded","points_available"
     "oskernel","https://classroom.github.com/classrooms/113154735-os-autograding-classroom-a857a2/assignments/oskernel","https://api.github.com/repos/os-autograding/oskernel2022-byte-os","yfblock","","oskernel-yfblock","https://github.com/os-autograding/oskernel-yfblock","2022-09-18 23:59:59 UTC","74","0"
     "oskernel","https://classroom.github.com/classrooms/113154735-os-autograding-classroom-a857a2/assignments/oskernel","https://api.github.com/repos/os-autograding/oskernel2022-byte-os","chyyuu","","oskernel-chyyuu","https://github.com/os-autograding/oskernel-chyyuu","2022-09-18 23:59:59 UTC","74","0"
@@ -84,57 +151,20 @@ async function getGrade() {
     })
 
     for(let repo of repos) {
-        let githubUsername = repo['github_username'];
+        // Get the student's github username
+        let githubUsername: string = repo['github_username'];
+
+        // Initialize the student's grade by name
+        grades[githubUsername] = {};
+        
+        // Get the latest grade record file
         let latest = await getRepoLogFile(githubUsername, 'latest.json');
-        if(latest) {
-            let file = JSON.parse(decodeLogFile(latest));
-            let logFile = await getRepoLogFile(githubUsername, file['default']);
-            file = decodeLogFile(logFile);
-            let index = file.lastIndexOf('Points: ');
-            let points = file.substr(index);
-            console.log(`${githubUsername.padEnd(15)} ${points}`)
-            // console.log(file)
-        } else {
-            console.log(`${githubUsername.padEnd(15)} 没有找到latest.json文件   没有分数`)
-        }
+
+        // Update student's grades
+        updateStudentGrades(githubUsername, await getWorksGrade(githubUsername, latest))
     }
-}
 
-async function test() {
-    // let orgs = await octokit.request('GET /orgs/{org}/repos', {
-    //     org: 'os-autograding'
-    // })
-    // console.log(orgs);
-
-    // let runs_output = await octokit.request('GET /repos/{owner}/{repo}/actions/runs/{run_id}/approvals', {
-    //     owner: 'os-autograding',
-    //     repo: 'oskernel2022-byte-os',
-    //     run_id: 3058022242
-    // })
-    // console.log(runs_output)
-
-    // let log = await octokit.request('GET /repos/{owner}/{repo}/actions/runs/{run_id}/attempts/{attempt_number}/logs', {
-    //     owner: 'os-autograding',
-    //     repo: 'oskernel2022-byte-os',
-    //     run_id: 3058022242,
-    //     attempt_number: 1
-    // })
-    // console.log(log);
-
-    // let log = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
-    //     owner: 'os-autograding',
-    //     repo: 'oskernel-yfblock',
-    //     path: '2022_09_16_15_34_00.txt',
-    //     ref: 'gh-pages'
-    // });
-    
-    // let data = log.data['content' as keyof typeof log.data];
-    // let encoding = log.data['encoding' as keyof typeof log.data];
-    // let buff = Buffer.from(data, encoding);
-    // let text = buff.toString('utf8');   
-
-    // console.log(text)
-    // console.log(process.env['ORG'])
+    console.log(JsonData);
 }
 
 getGrade().then(()=>getApiRemaining())
