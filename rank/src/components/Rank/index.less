@@ -1,0 +1,332 @@
+@nav-width: 240px;
+@nav-gap: 30px;
+@tree-node-height: 44px;
+
+.rank-container {
+  display: flex;
+  padding: 0;
+
+  width: 100%;
+  padding: 24px 28px;
+
+  .classroom-tree-area {
+    margin-right: @nav-gap;
+    position: relative;
+    .ant-tree-node-content-wrapper {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+
+      svg.icon {
+        font-size: 16px;
+      }
+    }
+    .fold-toggle {
+      position: absolute;
+      right: -@nav-gap;
+      top: 0;
+      transform: translateX(100%);
+      z-index: 100;
+      width: 32px;
+      height: 32px;
+      background: rgba(#eee, 0.8);
+      &:hover {
+        background: rgba(#ddd, 0.8);
+      }
+      font-weight: bold;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+    }
+  }
+  .classroom-tree-tree-hidden {
+    margin-right: 0;
+    .fold-toggle {
+      right: 0;
+    }
+    .classroom-tree {
+      width: 0;
+    }
+    .fold-toggle .icon {
+      transform: rotate(180deg);
+    }
+  }
+  .classroom-tree {
+    overflow: hidden;
+    width: @nav-width;
+    height: 100%;
+    background-color: rgba(#ddd, 0.3);
+    transition: width 0.2s;
+    .ant-tree-treenode {
+      height: @tree-node-height;
+      align-items: center;
+      .ant-tree-switcher {
+        display: none;
+      }
+    }
+  }
+  .rank-list {
+    // flex: 1;
+    width: calc(100% - @nav-width - @nav-gap);
+  }
+  .classroom-tree-tree-hidden + .rank-list {
+    width: 100%;
+  }
+}
+
+.rank-table .ant-table-tbody tr:nth-child(-n + 4) {
+  .top-three {
+    color: orange;
+  }
+}
+
+.rank-modal {
+  .icon {
+    font-size: 28px;
+  }
+}
+.use-case {
+  .icon {
+    visibility: hidden;
+    cursor: pointer;
+  }
+  &:hover {
+    .icon {
+      visibility: visible;
+    }
+  }
+}
+
+.link {
+  cursor: pointer;
+}
+
+.total-passed-info {
+  width: 180px;
+  position: absolute;
+  right: 0;
+  .passed-count {
+    display: flex;
+    justify-content: space-between;
+    font-weight: bold;
+    font-size: 12px;
+  }
+}
+
+.student-info {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  img {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    margin-right: 4px;
+  }
+  .student-info-name {
+    flex: 1;
+    text-align: left;
+    margin-left: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+.assignment-bar {
+  display: flex;
+  padding: 0;
+  justify-content: center;
+}
+
+.classroom-toggle {
+  position: absolute;
+  right: 10px;
+  top: 20px;
+  font-size: 1.6em;
+  cursor: pointer;
+}
+
+.classroom-nav-drawer {
+  .ant-drawer-header {
+    padding: 8px 12px;
+    .back {
+      font-size: 14px;
+      display: inline-flex;
+      align-items: center;
+      .icon {
+        font-size: 20px;
+        transform: rotate(90deg);
+      }
+    }
+  }
+}
+
+.rank-table-mobile {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  .rank-table-row {
+    padding: 0 12px;
+    display: flex;
+    align-items: center;
+    height: 72px;
+    width: 96%;
+    margin: 0 auto;
+    border: 1px solid rgba(#ddd, 0.3);
+    margin-bottom: 10px;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px -10px rgb(150 170 180 / 50%);
+    &-assigment {
+      height: 70px;
+    }
+    &.championship {
+      .list-order-index,
+      .rank-info,
+      .order-hat {
+        color: orange;
+      }
+    }
+    &.second-place {
+      .list-order-index,
+      .rank-info,
+      .order-hat {
+        color: #c6c0b3;
+      }
+    }
+
+    &.third-place {
+      .list-order-index,
+      .rank-info,
+      .order-hat {
+        color: #e6a10b;
+      }
+    }
+
+    .list-order-index {
+      width: 32px;
+      font-weight: bold;
+    }
+    .info-avartar {
+      width: 36px;
+      margin: 0 10px;
+      position: relative;
+      img {
+        border-radius: 50%;
+        width: 100%;
+      }
+      .order-hat {
+        display: inline-block;
+        position: absolute;
+        transform: translate(-8px, -6px) rotate(-45deg);
+        font-size: 18px;
+      }
+    }
+
+    .rank-info {
+      flex: 1;
+      width: 40px;
+      display: flex;
+      flex-direction: column;
+    }
+    .rank-info-more {
+      justify-content: space-around;
+      span {
+        line-height: 18px;
+        margin: 1px;
+        &.rank-info-name {
+          font-weight: bold;
+        }
+        &.rank-info-status {
+          & > span {
+            padding: 0 4px;
+            border-radius: 2px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid;
+          }
+          .green {
+            color: #389e0d;
+            background: #f6ffed;
+            border-color: #b7eb8f;
+          }
+          .red {
+            color: #cf1322;
+            background: #fff1f0;
+            border-color: #ffa39e;
+          }
+        }
+        &.rank-info-detail {
+          font-size: 12px;
+          color: #aaa;
+          & > span {
+            margin: 0 3px;
+          }
+          .commits {
+            color: #1890ff;
+          }
+        }
+      }
+    }
+    .rank-action {
+      width: 26px;
+    }
+    .rank-score {
+      width: 30px;
+      font-weight: 600;
+      font-size: 14px;
+      text-align: right;
+      &-success {
+        color: #e26208;
+      }
+    }
+    .rank-homeworks {
+      overflow: auto;
+      .homework-item {
+        display: inline-block;
+        margin: 1px;
+      }
+      .homework-undo {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        display: inline-block;
+        border: 1px dashed #aaa;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+  }
+}
+
+.classrank-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  position: relative;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 22px;
+  color: #515767;
+  .rest-middle-area {
+    flex: 1;
+    margin: 0 16px;
+    .statistic-wrap {
+      display: inline-block;
+      font-size: 14px;
+      cursor: pointer;
+      &:hover {
+        color: #007fff;
+      }
+      .icon {
+        margin-right: 4px;
+        font-size: 16px;
+      }
+    }
+  }
+}

@@ -1,0 +1,88 @@
+// @media only screen and (min-width: 1440px) and (max-width: 1960px) {
+//     .rank-container {
+//         width: calc(1960px - 100vw);
+//     }
+// }
+
+// @media only screen and (max-width: 1440px) {
+//     /* styles for browsers less than 1440px; */
+//     .rank-container {
+//         width: calc(1440px - 5vw);
+//     }
+// }
+
+@media only screen and (min-width: 375px) and (max-width: 480px) {
+  /* styles for browsers less than 1440px; */
+  .container {
+    & > header {
+      height: 60px;
+    }
+    #logo-box {
+      position: relative;
+      padding-left: 6px;
+      top: unset;
+      left: unset;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid #0000000f;
+      .logo-title {
+        flex-direction: row;
+      }
+    }
+    .main-menu {
+      padding-left: 0;
+    }
+  }
+  .rank-container {
+    padding: 0;
+    // padding-top: 10px;
+    margin: 0;
+    width: 100%;
+    .classroom-tree {
+      display: none;
+    }
+    .rank-list {
+      width: 100%;
+
+      .rank-table-mobile {
+        height: calc(100vh - 114px - 10px);
+        overflow: auto;
+        margin-top: 10px;
+      }
+      .query-name-input {
+        height: 36px;
+        input {
+          border-radius: 20px;
+          padding-left: 12px;
+        }
+        .ant-input-group-addon {
+          display: none;
+        }
+      }
+    }
+    .classrank-header {
+      height: 60px;
+      margin-bottom: 0;
+      border-bottom: 1px solid rgba(221, 221, 221, 0.3);
+      justify-content: space-evenly;
+      .icon {
+        font-size: 20px;
+      }
+    }
+  }
+  .total-passed-info {
+    position: absolute;
+    top: 64px;
+    right: 12px;
+    width: unset;
+    float: unset;
+    display: none;
+  }
+
+  .update-time-dialog {
+    .ant-modal-confirm-btns {
+      text-align: center;
+    }
+  }
+}
