@@ -21,7 +21,7 @@ jobs:
           node-version: '16.x'
       - name: create env file
         run: |
-          echo TOKEN=${{ secrets.TOKEN }} >> spider/.env
+          echo TOKEN=${{ secrets.AUTH_TOKEN }} >> spider/.env
           echo SESSION_TOKEN=${{ secrets.SESSION_TOKEN }} >> spider/.env
       - name: install spider pkg and run
         run: |
