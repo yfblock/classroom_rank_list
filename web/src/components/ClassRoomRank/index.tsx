@@ -19,7 +19,7 @@ interface StudentInfo {
 interface IProps {
   refreshKey: string
   isMobile?: boolean
-  latestUpdatedAt?: string
+  latestUpdatedAt?: number
   apiUseCount?: number
   columns: Array<string>
   students: StudentInfo[]
