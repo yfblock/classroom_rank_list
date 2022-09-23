@@ -19,6 +19,10 @@ export const connector = '~@~'
 const availables = data.available;
 const latestUpdatedAt = data.latest_updated_at
 
+function findWork(treeNodeId: string) {
+  console.log(treeNodeId);
+}
+
 // const defaultSelectedAssignment = classRoom[0].assignments[0].id
 const Rank = ({ isMobile }: { isMobile?: boolean }) => {
   const navRef = React.useRef<{ changeVisible: (visible: boolean) => void }>()
@@ -101,8 +105,13 @@ const Rank = ({ isMobile }: { isMobile?: boolean }) => {
           />
         </div>
       )}
-      {/* <main className="rank-list">
-        {isClassNode ? (
+      <main className="rank-list">
+        <ClassRankList
+          isMobile={isMobile}
+          latestUpdatedAt={latestUpdatedAt}
+          classroom={findWork(treeNodeId)}
+        />
+        {/* {isClassNode ? (
           <ClassRankList
             isMobile={isMobile}
             latestUpdatedAt={latestUpdatedAt}
@@ -115,8 +124,8 @@ const Rank = ({ isMobile }: { isMobile?: boolean }) => {
             assignment={findAssignment(treeNodeId)}
             treeNodeId={treeNodeId}
           />
-        )}
-      </main> */}
+        )} */}
+      </main>
     </div>
   )
 }

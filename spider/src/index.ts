@@ -154,6 +154,9 @@ async function getGrade() {
         // Get the student's github username
         let githubUsername: string = repo['github_username'];
 
+        // Get userinfo
+        let userInfo = await octokit.request('GET /users/{username}', { username: githubUsername});
+
         // Initialize the student's grade by name
         grades[githubUsername] = {};
         
@@ -162,6 +165,12 @@ async function getGrade() {
 
         // Update student's grades
         updateStudentGrades(githubUsername, await getWorksGrade(githubUsername, latest))
+        let studentGrades = await getWorksGrade(githubUsername, latest);
+        let student = {
+            name: userInfo['data']['login'],
+            avatar: userInfo['data']['avatar_url'],
+            grades: studentGrades
+        };
     }
 
     console.log(JsonData);

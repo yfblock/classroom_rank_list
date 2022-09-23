@@ -8,17 +8,25 @@ export const assignment = 'oskernel';
 export const works = ['default', 'main'];
 export const AUTH_TOKEN = process.env['TOKEN'];
 
+// declare student's info, contains grades
+interface StudentInfo {
+    name: string,
+    avatar: string,
+    repo_url: string,
+    grades: any
+}
+
 // declare config of the file
 declare interface ResultObject {
     available: any;
-    grades: any;
+    students: any;
 }
 
 // JsonData store the grades and the other info.
 export let JsonData: ResultObject = {
     available: {},
     // grades has the tree. grades --> studentGithubUsername --> workName --> grade
-    grades: {}
+    students: {}
 }
 
 

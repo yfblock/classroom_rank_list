@@ -10,20 +10,49 @@ import AssignmentBar from './assignmentBar'
 import { AvatarInfo, MobileAvatarInfo } from './AvatarInfo'
 import StatisticModal from './StatisticModal'
 
+interface StudentInfo {
+  name: string
+  avatar?: string
+  homeworks: TStudentWork[]
+  totalScore: number
+  rank?: number
+}
+
+interface ClassRoomData {
+  works: string[],
+  students: StudentInfo[]
+};
+
 interface IProps {
-  classroom?: TClassroom
+  classroom?: ClassRoomData
   isMobile?: boolean
   latestUpdatedAt?: string
   apiUseCount?: number
 }
 
+interface TStudentWork {
+  work: string,
+  score: number
+}
+
 interface IDatasource {
   name: string
   avatar?: string
-  homeworks: TStudentHomework[]
+  homeworks: TStudentWork[]
   totalScore: number
-  averageScore: number
   rank?: number
+}
+
+const showUpdatetime = (props: any) => {
+  Modal.info({
+    className: 'update-time-dialog',
+    title: '最新数据更新时间',
+    centered: true,
+    width: '75%',
+    content: <div>{dayjs(props.latestUpdatedAt).format('YYYY-MM-DD HH:mm::ss')}</div>,
+    okText: '关闭',
+    okButtonProps: { style: { width: 120 } }
+  })
 }
 
 const ClassRoomRank = (props: IProps) => {
@@ -74,30 +103,46 @@ const ClassRoomRank = (props: IProps) => {
         align: 'center',
         width: 100,
         fixed: true,
-        dataIndex: 'averageScore',
-        key: 'averageScore',
+        dataIndex: 'totalScore',
+        key: 'totalScore',
         render(text, record) {
           return (
             <span className={`${record.rank && record.rank < 4 ? 'top-three' : ''}`}>{text}</span>
           )
         }
       },
-      ...(map(props.classroom?.assignments, (item: TAssignment) => {
-        return {
-          title: item.title,
-          dataIndex: `assignments-${item.id}`,
-          width: 200,
-          align: 'center',
-          key: item.id,
-          render(_text: string, record: IDatasource) {
-            const homework = record.homeworks.find(({ repoURL }) => repoURL.includes(item.title))
-            if (homework && homework.submission_timestamp) {
-              return <AssignmentBar score={Number(homework.points_awarded || 0)} />
-            }
-            return <span>-</span>
-          }
-        }
-      }) as ColumnsType<IDatasource>),
+      // ...(map(props.classroom?.assignments, (item: TAssignment) => {
+      //   return {
+      //     title: item.title,
+      //     dataIndex: `assignments-${item.id}`,
+      //     width: 200,
+      //     align: 'center',
+      //     key: item.id,
+      //     render(_text: string, record: IDatasource) {
+      //       const homework = record.homeworks.find(({ repoURL }) => repoURL.includes(item.title))
+      //       if (homework && homework.submission_timestamp) {
+      //         return <AssignmentBar score={Number(homework.points_awarded || 0)} />
+      //       }
+      //       return <span>-</span>
+      //     }
+      //   }
+      // }) as ColumnsType<IDatasource>),
+      // ...(map(props.classroom?.assignments, (item: TAssignment) => {
+      //   return {
+      //     title: item.title,
+      //     dataIndex: `assignments-${item.id}`,
+      //     width: 200,
+      //     align: 'center',
+      //     key: item.id,
+      //     render(_text: string, record: IDatasource) {
+      //       const homework = record.homeworks.find(({ repoURL }) => repoURL.includes(item.title))
+      //       if (homework && homework.submission_timestamp) {
+      //         return <AssignmentBar score={Number(homework.points_awarded || 0)} />
+      //       }
+      //       return <span>-</span>
+      //     }
+      //   }
+      // }) as ColumnsType<IDatasource>),
       {
         title: '',
         dataIndex: 'none',
@@ -108,31 +153,34 @@ const ClassRoomRank = (props: IProps) => {
     [classroomId]
   )
 
-  let dataSource: IDatasource[] = useMemo(() => {
-    const studentHomeworkds = flatMap(map(props.classroom?.assignments, 'student_repositories'))
-    const studentGroups = groupBy(studentHomeworkds, 'name')
-    const studentAchievement = map(keys(studentGroups), (studentName) => {
-      const homeworks = studentGroups[studentName]
-      const totalScore = homeworks.reduce((total, homework) => {
-        if (homework.submission_timestamp) {
-          return total + Number(homework.points_awarded || 0)
-        }
-        return total
-      }, 0)
-      return {
-        name: studentName,
-        avatar: homeworks[0]?.studentInfo.avatar_url,
-        homeworks,
-        totalScore,
-        averageScore: Math.floor(totalScore / props.classroom!.assignments.length)
-      }
-    })
-    return orderBy(studentAchievement, ['averageScore'], ['desc']).map((item, index) => ({
-      ...item,
-      rank: index + 1
-    }))
-    //eslint-disable-next-line
-  }, [classroomId])
+  // let dataSource: IDatasource[] = useMemo(() => {
+  //   const studentHomeworkds = flatMap(map(props.classroom?.assignments, 'student_repositories'))
+  //   const studentGroups = groupBy(studentHomeworkds, 'name')
+  //   const studentAchievement = map(keys(studentGroups), (studentName) => {
+  //     const homeworks = studentGroups[studentName]
+  //     const totalScore = homeworks.reduce((total, homework) => {
+  //       if (homework.submission_timestamp) {
+  //         return total + Number(homework.points_awarded || 0)
+  //       }
+  //       return total
+  //     }, 0)
+  //     return {
+  //       name: studentName,
+  //       avatar: homeworks[0]?.studentInfo.avatar_url,
+  //       homeworks,
+  //       totalScore,
+  //       averageScore: Math.floor(totalScore / props.classroom!.assignments.length)
+  //     }
+  //   })
+
+  //   return orderBy(studentAchievement, ['averageScore'], ['desc']).map((item, index) => ({
+  //     ...item,
+  //     rank: index + 1
+  //   }))
+  //   //eslint-disable-next-line
+  // }, [classroomId])
+
+  let dataSource: IDatasource[] = [];
 
   dataSource = dataSource.filter((item: IDatasource) => {
     let searchName = true
@@ -167,7 +215,7 @@ const ClassRoomRank = (props: IProps) => {
                 <span onClick={() => window.open(`https://github.com/${item.name}`)}>
                   {item.name}
                 </span>
-                <div className="rank-homeworks">
+                {/* <div className="rank-homeworks">
                   {map(props.classroom?.assignments, (assigment: TAssignment) => {
                     const homework = item.homeworks.find(({ repoURL }) =>
                       repoURL.includes(assigment.title)
@@ -192,12 +240,12 @@ const ClassRoomRank = (props: IProps) => {
                       </span>
                     )
                   })}
-                </div>
+                </div> */}
               </div>
               <span
-                className={`rank-score ${item.averageScore === 100 ? 'rank-score-success' : ''}`}
+                className={`rank-score ${item.totalScore === 100 ? 'rank-score-success' : ''}`}
               >
-                {item.averageScore}
+                {item.totalScore}
               </span>
             </li>
           )
@@ -205,17 +253,7 @@ const ClassRoomRank = (props: IProps) => {
       </ul>
     )
   }
-  const showUpdatetime = () => {
-    Modal.info({
-      className: 'update-time-dialog',
-      title: '最新数据更新时间',
-      centered: true,
-      width: '75%',
-      content: <div>{dayjs(props.latestUpdatedAt).format('YYYY-MM-DD HH:mm::ss')}</div>,
-      okText: '关闭',
-      okButtonProps: { style: { width: 120 } }
-    })
-  }
+
   return (
     <>
       <div className="classrank-header">

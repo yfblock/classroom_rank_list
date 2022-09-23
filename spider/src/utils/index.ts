@@ -21,10 +21,9 @@ export function updateAvailable(work: string, points: number) {
 }
 
 /**
- * Update the student's grade from JsonData.
- * @param githubUsername The github username of the student whose grades will be updated.
- * @param grades The student's grades.
+ * Add the student's grade to JsonData.
+ * @param studentInfo 
  */
-export function updateStudentGrades(githubUsername: string, grades: any) {
-    JsonData['grades'][githubUsername] = grades;
+export function addStudentInfo(studentInfo) {
+    
 }

@@ -8,6 +8,8 @@ import 'dayjs/locale/zh-cn'
 
 import './app.less'
 import './responsive.less'
+import DefaultLayout from './layouts/DefaultLayout'
+import MobileLayout from './layouts/MobileLayout'
 
 dayjs.locale('zh-cn')
 
@@ -31,7 +33,9 @@ function App() {
         </div>
         <Contact isMobile={mobile} />
       </header>
-      <Rank isMobile={mobile} />
+      {
+        mobile ? <MobileLayout /> : <DefaultLayout />
+      }
     </div>
   )
 }

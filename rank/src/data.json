@@ -3,17 +3,16 @@
         "default": 283,
         "main": 30
     },
-    "grades": {
-        "yfblock": {
-            "default": 73,
-            "main": 0
-        }
-    },
-    "students": {
-        "yfblock": {
+    "students": [
+        {
+            "name": "yfblock",
             "avatar": "https://avatars.githubusercontent.com/u/14835777?v=4",
-            "repo_url": "https://github.com/os-autograding/oskernel-yfblock"
+            "repo_url": "https://github.com/os-autograding/oskernel-yfblock",
+            "grades": {
+                "default": 73,
+                "main": 0
+            }
         }
-    },
+    ],
     "latest_updated_at": "2022-09-15T01:03:07.565Z"
 }
