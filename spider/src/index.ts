@@ -1,5 +1,5 @@
 import { Octokit } from "octokit";
-import { assignment, AUTH_TOKEN, JsonData, organiztion, works } from "./config";
+import { assignment, AUTH_TOKEN, fullOrganization, JsonData, organiztion, works } from "./config";
 import fetch from "node-fetch";
 import { HttpsProxyAgent } from "https-proxy-agent";
 import { parse } from "csv-parse/sync";
@@ -12,7 +12,7 @@ const octokit = new Octokit({
 
 const grades: any = {};
 
-const proxyAgent = new HttpsProxyAgent('http://172.24.160.1:7890');
+// const proxyAgent = new HttpsProxyAgent('http://172.20.144.1:7890');
 
 /**
  * Get the info of the assignment
@@ -45,7 +45,7 @@ async function fetchAssignments(classroom: string, assigment: string, sessionTok
             // referrerPolicy: 'strict-origin-when-cross-origin',
             // body: null,
             method: 'GET',
-            agent: proxyAgent
+            // agent: proxyAgent
         })
     
         // If it get the result successfully.
@@ -139,13 +139,7 @@ async function getWorksGrade(githubUsername: string, latest: any) {
 
 
 async function getGrade() {
-    // let value = await fetchAssignments(fullOrganization, assignment, process.env['SESSION_TOKEN'] ?? "");
-    let value = `"assignment_name","assignment_url","starter_code_url","github_username","roster_identifier","student_repository_name","student_repository_url","submission_timestamp","points_awarded","points_available"
-    "oskernel","https://classroom.github.com/classrooms/113154735-os-autograding-classroom-a857a2/assignments/oskernel","https://api.github.com/repos/os-autograding/oskernel2022-byte-os","yfblock","","oskernel-yfblock","https://github.com/os-autograding/oskernel-yfblock","2022-09-18 23:59:59 UTC","74","0"
-    "oskernel","https://classroom.github.com/classrooms/113154735-os-autograding-classroom-a857a2/assignments/oskernel","https://api.github.com/repos/os-autograding/oskernel2022-byte-os","chyyuu","","oskernel-chyyuu","https://github.com/os-autograding/oskernel-chyyuu","2022-09-18 23:59:59 UTC","74","0"
-    "oskernel","https://classroom.github.com/classrooms/113154735-os-autograding-classroom-a857a2/assignments/oskernel","https://api.github.com/repos/os-autograding/oskernel2022-byte-os","shzhxh","","oskernel-shzhxh","https://github.com/os-autograding/oskernel-shzhxh","2022-09-21 23:59:59 UTC","49","0"
-    "oskernel","https://classroom.github.com/classrooms/113154735-os-autograding-classroom-a857a2/assignments/oskernel","https://api.github.com/repos/os-autograding/oskernel2022-byte-os","scPointer","","oskernel-scPointer","https://github.com/os-autograding/oskernel-scPointer","2022-09-20 23:59:59 UTC","283","0"
-    "oskernel","https://classroom.github.com/classrooms/113154735-os-autograding-classroom-a857a2/assignments/oskernel","https://api.github.com/repos/os-autograding/oskernel2022-byte-os","tkf2019","","oskernel-tkf2019","https://github.com/os-autograding/oskernel-tkf2019","2022-09-20 23:59:59 UTC","74","0"`;
+    let value = await fetchAssignments(fullOrganization, assignment, process.env['SESSION_TOKEN'] ?? "");
 
     let repos = parse(value, {
         columns: true, skip_empty_lines: true, trim: true
