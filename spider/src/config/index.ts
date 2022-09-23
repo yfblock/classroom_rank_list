@@ -12,7 +12,9 @@ export const AUTH_TOKEN = process.env['TOKEN'];
 export let JsonData: ResultObject = {
     available: {},
     // grades has the tree. grades --> studentGithubUsername --> workName --> grade
-    students: []
+    students: [],
+    // latest update time
+    latestUpdatedAt: Date.now()
 }
 
 

@@ -39,6 +39,7 @@ function App() {
         refreshKey="default"
         columns={Object.keys(jsonData.available)}
         students={jsonData.students}
+        latestUpdatedAt={jsonData.latestUpdatedAt}
       />
     </div>
   )
