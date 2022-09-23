@@ -24,6 +24,6 @@ export function updateAvailable(work: string, points: number) {
  * Add the student's grade to JsonData.
  * @param studentInfo 
  */
-export function addStudentInfo(studentInfo) {
-    
+export function addStudentInfo(studentInfo: StudentInfo) {
+    JsonData['students'].push(studentInfo)
 }

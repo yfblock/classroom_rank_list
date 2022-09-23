@@ -4,7 +4,7 @@
   "description": "a spider to get github classroom result",
   "main": "index.js",
   "scripts": {
-    "start": "ts-node ./src/index.ts"
+    "start": "ts-node --files src/index.ts"
   },
   "author": "yufeng",
   "license": "ISC",

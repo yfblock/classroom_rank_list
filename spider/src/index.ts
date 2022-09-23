@@ -1,9 +1,10 @@
 import { Octokit } from "octokit";
-import { assignment, AUTH_TOKEN, fullOrganization, JsonData, organiztion, works } from "./config";
+import { assignment, AUTH_TOKEN, JsonData, organiztion, works } from "./config";
 import fetch from "node-fetch";
 import { HttpsProxyAgent } from "https-proxy-agent";
 import { parse } from "csv-parse/sync";
-import { buildEmptyGrades, updateAvailable, updateStudentGrades } from "./utils";
+import { addStudentInfo, buildEmptyGrades, updateAvailable } from "./utils";
+import { writeFileSync } from 'fs';
 
 const octokit = new Octokit({
     auth: AUTH_TOKEN
@@ -73,7 +74,7 @@ function decodeLogFile(fileObject: any) {
  * @description By default, gh-pages branch is used, and only files in the root directory can be got.
  * @param githubUsername The github username of the student who completed the assignment.
  * @param filename The file's name in the student repository.
- * @returns 
+ * @returns The file object contains the file info and more details
  */
 async function getRepoLogFile(githubUsername: string, filename: string) {
     try {
@@ -163,17 +164,19 @@ async function getGrade() {
         // Get the latest grade record file
         let latest = await getRepoLogFile(githubUsername, 'latest.json');
 
-        // Update student's grades
-        updateStudentGrades(githubUsername, await getWorksGrade(githubUsername, latest))
+        // Store userinfo to json data
         let studentGrades = await getWorksGrade(githubUsername, latest);
         let student = {
             name: userInfo['data']['login'],
             avatar: userInfo['data']['avatar_url'],
+            repo_url: repo['student_repository_url'],
             grades: studentGrades
         };
+        addStudentInfo(student);
     }
-
-    console.log(JsonData);
 }
 
-getGrade().then(()=>getApiRemaining())
+getGrade().then(()=>getApiRemaining()).then(() => {
+    // Save json data to file.
+    writeFileSync('../web/data.json', JSON.stringify(JsonData))
+})
