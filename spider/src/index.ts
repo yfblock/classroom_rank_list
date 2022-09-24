@@ -120,11 +120,11 @@ async function getWorksGrade(githubUsername: string, latest: any) {
 
         // Get the value of the work's log file.
         let logFile = await getRepoLogFile(githubUsername, file[work]);
-        file = decodeLogFile(logFile);
+        let gradeFile = decodeLogFile(logFile);
 
         // Handle the result
-        let index = file.lastIndexOf('Points: ');
-        let pointString = file.substr(index).replace('Points: ', '');
+        let index = gradeFile.lastIndexOf('Points: ');
+        let pointString = gradeFile.substring(index).replace('Points: ', '');
         let points = pointString.split('/').map((item: string, _index: number)=>parseFloat(item));
         
         // Update available points by work name.
