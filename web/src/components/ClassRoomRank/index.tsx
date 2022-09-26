@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import { Table, Modal, Input } from 'antd'
 import dayjs from 'dayjs'
 import { orderBy } from 'lodash'
@@ -14,6 +14,7 @@ interface StudentInfo {
   avatar?: string
   grades: any
   rank?: number
+  total?: number
 }
 
 interface IProps {
@@ -108,12 +109,22 @@ const ClassRoomRank = (props: IProps) => {
   )
 
   let dataSource: StudentInfo[] = useMemo(() => {
-    let students = orderBy(props.students, ['total'], 'desc');
+    const studentsList = props.students.map((item, index) => {
+      let total = 0;
+      for(let i in item.grades) {
+        total += item.grades[i];
+      }
+      item['total'] = total;
+      return item;
+    });
+    let students = orderBy(studentsList, ['total'], 'desc');
     for(let i = 0; i < students.length; i++) {
       students[i].rank = i + 1;
     }
     return students;
   }, [classroomId]);
+
+  console.log(props.students)
 
   // Filter data source by search data
   dataSource = dataSource.filter((item) => {
