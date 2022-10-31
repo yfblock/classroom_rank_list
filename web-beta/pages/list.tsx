@@ -54,6 +54,9 @@ export default function Home() {
         // loading={initLoading}
         itemLayout="horizontal"
         // loadMore={loadMore}
+        pagination={{
+          position: 'bottom'
+        }}
         dataSource={list}
         renderItem={item => (
           <List.Item>

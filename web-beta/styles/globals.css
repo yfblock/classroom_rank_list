@@ -40,3 +40,8 @@ a {
 .ant-menu-overflow::before {
   flex: 1;
 }
+
+.ant-list-item-meta {
+  margin-left: 1em;
+  align-items: center;
+} 
