@@ -2,9 +2,9 @@ import * as dotenv from "dotenv";
 
 export const config = dotenv.config();
 
-export const organiztion: string = 'os-autograding';            // 组织
-export const fullOrganization: string = '113154735-os-autograding-classroom-a857a2'; // classroom名称
-export const assignment = 'oskernel';   // assignment
+export const organiztion: string = 'os2edu';            // 组织
+export const fullOrganization: string = '96758419-rustlings'; // classroom名称
+export const assignment = 'rustlings';   // assignment
 export const works = ['default']; // assignment 的不同情况
 export const AUTH_TOKEN = process.env['TOKEN'];
 export const SESSION_TOKEN = process.env['SESSION_TOKEN'];
