@@ -1,5 +1,5 @@
 import { Octokit } from "octokit";
-import { assignment, AUTH_TOKEN, fullOrganization, JsonData, organiztion, works } from "./config";
+import { assignment, AUTH_TOKEN, fullOrganization, JsonData, organiztion, SESSION_TOKEN, works } from "./config";
 import fetch from "node-fetch";
 import { HttpsProxyAgent } from "https-proxy-agent";
 import { parse } from "csv-parse/sync";
@@ -139,7 +139,7 @@ async function getWorksGrade(githubUsername: string, latest: any) {
 
 
 async function getGrade() {
-    let value = await fetchAssignments(fullOrganization, assignment, process.env['SESSION_TOKEN'] ?? "");
+    let value = await fetchAssignments(fullOrganization, assignment, SESSION_TOKEN ?? "");
 
     let repos = parse(value, {
         columns: true, skip_empty_lines: true, trim: true
