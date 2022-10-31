@@ -1,6 +1,12 @@
 .container {
-    border-radius: 0.5em;
-    margin: 0 auto;
+    /* border-radius: 0.5em; */
+    margin: 2em auto;
     width: 90%;
     max-width: 1200px;
+    background-color: white;
+    /* height: 100%; */
+    /* position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); */
 }

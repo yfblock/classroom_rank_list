@@ -10,9 +10,13 @@ const routerPath: MenuProps['items'] = [
     label: '首页',
   },
   {
+    key: '/rank',
+    label: '排名'
+  },
+  {
     key: '/list',
-    label: '列表'
-  }
+    label: '题目列表'
+  },
 ];
 
 
@@ -26,8 +30,12 @@ export default function() {
 
   return <Header className="header">
   <Row justify="space-around">
-    <Col span={4}><div className="logo"><h2>rustlings 排行榜</h2></div></Col>
-    <Col span={10}><Menu onClick={routeHandler} theme="light" mode="horizontal" defaultSelectedKeys={['2']} items={routerPath} /></Col>
+    <Col xs={14} sm={12} md={12} lg={8} xl={4}>
+      <div className="logo"><h2>rustlings 排行榜</h2></div>
+    </Col>
+    <Col xs={10} sm={8} md={6} lg={8} xl={10}>
+      <Menu onClick={routeHandler} theme="light" mode="horizontal" defaultSelectedKeys={['2']} items={routerPath} />
+    </Col>
   </Row>
 </Header>
 }
