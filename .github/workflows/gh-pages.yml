@@ -34,6 +34,7 @@ jobs:
       - name: build beta pages
         run: |
           cd web-beta && npm install
+          npm run build
           npm run export
           mv out ../web/dist/beta
       - name: GitHub Pages
