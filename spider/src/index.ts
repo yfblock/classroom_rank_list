@@ -127,6 +127,19 @@ async function getWorksGrade(githubUsername: string, latest: any) {
         let pointString = gradeFile.substring(index).replace('Points: ', '');
         let points = pointString.split('/').map((item: string, _index: number)=>parseFloat(item));
         
+        // Get Details Grade
+        let gradeDetails = gradeFile.substring(0, index).trim();
+        let details:any = {};   // details grade
+        gradeDetails.split('\n').forEach((value: string) => {
+            if(value.startsWith('✅')) {
+                let title = value.replace('pass', '').substring(2).trim();
+                details[title] = true;
+            } else if (value.startsWith('❌')) {
+                let title = value.replace(/\s\d+\/\d+/, '').substring(2).trim();
+                details[title] = false;
+            }
+        });
+
         // Update available points by work name.
         updateAvailable(work, points[1]);
 
