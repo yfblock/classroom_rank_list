@@ -3,7 +3,7 @@
 }
 
 .main {
-  min-height: 80vh;
+  min-height: 65vh;
   padding: 4rem 0;
   flex: 1;
   display: flex;
@@ -40,7 +40,7 @@
 }
 
 .title {
-  margin: 0;
+  margin-top: 1rem;
   line-height: 1.15;
   font-size: 4rem;
 }
@@ -51,9 +51,9 @@
 }
 
 .description {
-  margin: 4rem 0;
+  margin: 1rem 0;
   line-height: 1.5;
-  font-size: 1.5rem;
+  font-size: 1rem;
 }
 
 .code {
@@ -83,6 +83,7 @@
   border-radius: 10px;
   transition: color 0.15s ease, border-color 0.15s ease;
   max-width: 300px;
+  background-color: #fff;
 }
 
 .card:hover,

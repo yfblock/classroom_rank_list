@@ -6,22 +6,28 @@ export default function Home() {
   return (
     <div className={styles.container}>
       <Head>
-        <title>Rustlings 排行榜</title>
+        <title>秋季训练营</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
       <main className={styles.main}>
-        <h1 className={styles.title}>
-          Rustlings 排行榜
-        </h1>
+        <h2 className={styles.title}>
+        秋季训练营
+        </h2>
 
-        <p className={styles.description}>
-          Get started by opening{' '}
-          <a href='https://github.com/os2edu/rustlings'>rustlings</a>
-        </p>
+        <div className={styles.grid}>
+          <a href="https://github.com/os2edu/rustlings" className={styles.card}>
+            <h2>Rustlings &rarr;</h2>
+            <p>秋季训练营 Rustlings 训练</p>
+          </a>
+        </div>
 
+        
       </main>
-
+      <p className={styles.description}>
+          2022 OS 夏季训练营排行榜{' '}
+          <a href='https://learningos.github.io/classroom-grading/'>点击查看</a>
+        </p>
     </div>
   )
 }
