@@ -61,7 +61,7 @@ export default function RankPage() {
             <Skeleton avatar title={false} active loading={false}>
               <List.Item.Meta
                 avatar={<Avatar src={item.avatar} />}
-                title={<a href="https://ant.design">{item.name}</a>}
+                title={<a href={`https://github.com/${item.name}`}>{item.name}</a>}
                 description={`Pass ${description} questions`}
               />
               <div>完成度： {(parseInt(description) / questionsNumber * 100).toFixed(2)}%</div>

@@ -17,6 +17,7 @@ const columns: ColumnsType<DataType> = [
     dataIndex: 'index',
     align: 'center',
     width: 80,
+    sorter: (a, b) => a > b ? 1 : -1,
     key: 'index',
   },
   {
@@ -59,7 +60,9 @@ export default function Home() {
       <Head>
         <title>题目列表</title>
       </Head>
-      <Table className={styles.container} columns={columns} dataSource={list} />
+      <Table pagination={{
+        defaultPageSize: 100
+      }} className={styles.container} columns={columns} dataSource={list} />
     </>
   )
 }
