@@ -21,6 +21,14 @@ export function updateAvailable(work: string, points: number) {
 }
 
 /**
+ * Update questions
+ * @param questions the list of questions 
+ */
+export function updateQuestions(questions: string[]) {
+    JsonData['questions'] = questions;
+}
+
+/**
  * Add the student's grade to JsonData.
  * @param studentInfo 
  */

@@ -10,5 +10,6 @@ declare interface StudentInfo {
 interface ResultObject {
     available: any;
     students: Array<StudentInfo>;
+    questions: Array<string>;
     latestUpdatedAt: number
 }

@@ -14,6 +14,8 @@ export let JsonData: ResultObject = {
     available: {},
     // grades has the tree. grades --> studentGithubUsername --> workName --> grade
     students: [],
+    // the list of questions
+    questions: [],
     // latest update time
     latestUpdatedAt: Date.now()
 }

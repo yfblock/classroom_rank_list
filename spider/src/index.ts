@@ -3,7 +3,7 @@ import { assignment, AUTH_TOKEN, fullOrganization, JsonData, organiztion, SESSIO
 import fetch from "node-fetch";
 import { HttpsProxyAgent } from "https-proxy-agent";
 import { parse } from "csv-parse/sync";
-import { addStudentInfo, buildEmptyGrades, updateAvailable } from "./utils";
+import { addStudentInfo, buildEmptyGrades, updateAvailable, updateQuestions } from "./utils";
 import { writeFileSync } from 'fs';
 
 const octokit = new Octokit({
@@ -143,6 +143,9 @@ async function getWorksGrade(githubUsername: string, latest: any) {
 
         // Update available points by work name.
         updateAvailable(work, points[1]);
+
+        // Update the list of questions
+        updateQuestions(Object.keys(details));
 
         // Store grade to points variable.
         if(work in grade) {
