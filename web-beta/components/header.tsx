@@ -20,7 +20,7 @@ const routerPath: MenuProps['items'] = [
 ];
 
 
-export default function() {
+export default function LayoutHeader() {
 
   const router = useRouter();
 

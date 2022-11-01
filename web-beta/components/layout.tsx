@@ -4,7 +4,7 @@ import Header from './header';
 
 const { Content, Footer } = Layout;
 
-export default function({ children }: { children: React.ReactNode; }){  
+export default function DefaultLayout({ children }: { children: React.ReactNode; }){  
   return <Layout style={{
     minHeight: '100vh'
   }}>

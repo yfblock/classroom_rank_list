@@ -108,9 +108,10 @@ async function getApiRemaining() {
  */
 async function getWorksGrade(githubUsername: string, latest: any) {
     let grade = buildEmptyGrades();
+    let gradeDetails: any = {};
     if(!latest) {
         console.log(`${githubUsername.padEnd(15)} 没有找到latest.json文件   没有分数`);
-        return grade;
+        return [grade, gradeDetails];
     }
 
     let file = JSON.parse(decodeLogFile(latest));
@@ -128,9 +129,9 @@ async function getWorksGrade(githubUsername: string, latest: any) {
         let points = pointString.split('/').map((item: string, _index: number)=>parseFloat(item));
         
         // Get Details Grade
-        let gradeDetails = gradeFile.substring(0, index).trim();
+        let gradeDetailsOutput = gradeFile.substring(0, index).trim();
         let details:any = {};   // details grade
-        gradeDetails.split('\n').forEach((value: string) => {
+        gradeDetailsOutput.split('\n').forEach((value: string) => {
             if(value.startsWith('✅')) {
                 let title = value.replace('pass', '').substring(2).trim();
                 details[title] = true;
@@ -144,10 +145,13 @@ async function getWorksGrade(githubUsername: string, latest: any) {
         updateAvailable(work, points[1]);
 
         // Store grade to points variable.
-        if(work in grade) grade[work] = points[0];
+        if(work in grade) {
+            grade[work] = points[0];
+            gradeDetails[work] = details;
+        }
         console.log(`${githubUsername.padEnd(15)} ${points}`)
     }
-    return grade;
+    return [grade, gradeDetails];
 }
 
 
@@ -172,12 +176,13 @@ async function getGrade() {
         let latest = await getRepoLogFile(githubUsername, 'latest.json');
 
         // Store userinfo to json data
-        let studentGrades = await getWorksGrade(githubUsername, latest);
+        let [studentGrades, studentGradesDetails] = await getWorksGrade(githubUsername, latest);
         let student = {
             name: userInfo['data']['login'],
             avatar: userInfo['data']['avatar_url'],
             repo_url: repo['student_repository_url'],
-            grades: studentGrades
+            grades: studentGrades,
+            details: studentGradesDetails
         };
         addStudentInfo(student);
     }
@@ -186,4 +191,5 @@ async function getGrade() {
 getGrade().then(()=>getApiRemaining()).then(() => {
     // Save json data to file.
     writeFileSync('../web/src/data.json', JSON.stringify(JsonData))
+    writeFileSync('../web-beta/src/data.json', JSON.stringify(JsonData))
 })

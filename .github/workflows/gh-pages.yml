@@ -31,6 +31,11 @@ jobs:
         run: |
           cd web && npm install
           npm run build
+      - name: build beta pages
+        run: |
+          cd web-beta && npm run install
+          npm run export
+          mv out ../web/dist/beta
       - name: GitHub Pages
         uses: crazy-max/ghaction-github-pages@v3.0.0
         with:
