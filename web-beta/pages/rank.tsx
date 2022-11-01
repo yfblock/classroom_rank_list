@@ -64,7 +64,7 @@ export default function RankPage() {
                 title={<a href="https://ant.design">{item.name}</a>}
                 description={`Pass ${description} questions`}
               />
-              <div>通过率： {(parseInt(description) / questionsNumber * 100).toFixed(2)}%</div>
+              <div>完成度： {(parseInt(description) / questionsNumber * 100).toFixed(2)}%</div>
             </Skeleton>
           </List.Item>
         );
