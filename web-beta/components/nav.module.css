@@ -1,0 +1,12 @@
+.navList {
+  display: inline-flex;
+  gap: 46px;
+}
+
+.navList .navItem {
+    cursor: pointer;
+}
+
+.navList .navItem:hover {
+    color: #ff589e;
+}

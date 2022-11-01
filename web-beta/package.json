@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@ant-design/icons": "^4.7.0",
+    "@os2edu/layout": "^0.1.1",
     "@types/lodash": "^4.14.187",
     "antd": "^4.23.6",
     "lodash": "^4.17.21",
