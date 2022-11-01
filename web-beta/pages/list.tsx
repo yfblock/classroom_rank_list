@@ -1,44 +1,56 @@
-import { Avatar, Col, List, Row, Skeleton } from 'antd'
+import { Table } from 'antd'
+import { ColumnsType } from 'antd/lib/table';
 import Head from 'next/head'
-import Image from 'next/image'
 import { useEffect, useState } from 'react';
+import { getQuestionPassRate, getQuestions } from '../requests';
 import styles from '../styles/List.module.css'
 
 interface DataType {
-  gender?: string;
-  name: {
-    title?: string;
-    first?: string;
-    last?: string;
-  };
-  email?: string;
-  picture: {
-    large?: string;
-    medium?: string;
-    thumbnail?: string;
-  };
-  nat?: string;
-  loading: boolean;
+  name: string,
+  index: number,
+  rate: number
 }
 
-const count = 3;
-const fakeDataUrl = `https://randomuser.me/api/?results=${count}&inc=name,gender,email,nat,picture&noinfo`;
-
+const columns: ColumnsType<DataType> = [
+  {
+    title: '题号',
+    dataIndex: 'index',
+    align: 'center',
+    width: 80,
+    key: 'index',
+  },
+  {
+    title: '题目',
+    dataIndex: 'name',
+    key: 'name',
+  },
+  {
+    title: '通过率',
+    key: 'rate',
+    align: 'center',
+    dataIndex: 'rate',
+    sorter: (a, b) => a.rate > b.rate ? 1 : -1,
+    render: (rate) => {
+      return <a>{rate}%</a>
+    }
+  }
+];
 
 export default function Home() {
-
-  const [initLoading, setInitLoading] = useState(true);
-  const [loading, setLoading] = useState(false);
-  const [data, setData] = useState<DataType[]>([]);
-  const [list, setList] = useState<DataType[]>([]);
+  const [list, setList] = useState<any[]>([]);
 
   useEffect(() => {
-    fetch(fakeDataUrl)
-      .then(res => res.json())
-      .then(res => {
-        setInitLoading(false);
-        setData(res.results);
-        setList(res.results);
+    getQuestions()
+      .then(async res => {
+        let arr: any[] = [];
+        for(let i in res) {
+          arr[i] = {
+            index: parseInt(i) + 1,
+            name: res[i],
+            rate: await getQuestionPassRate(res[i])
+          };
+        }
+        setList(arr);
       });
   }, []);
 
@@ -47,26 +59,7 @@ export default function Home() {
       <Head>
         <title>题目列表</title>
       </Head>
-      <List
-        size="large"
-        bordered
-        className={styles.container}
-        // loading={initLoading}
-        itemLayout="horizontal"
-        // loadMore={loadMore}
-        pagination={{
-          position: 'bottom'
-        }}
-        dataSource={list}
-        renderItem={item => (
-          <List.Item>
-            <Skeleton avatar title={false} loading={item.loading} active>
-              <div>1.{"题目名称"}</div>
-              <div>通过率： {"33.3%"}</div>
-            </Skeleton>
-          </List.Item>
-        )}
-      />
+      <Table className={styles.container} columns={columns} dataSource={list} />
     </>
   )
 }

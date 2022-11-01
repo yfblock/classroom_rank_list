@@ -1,4 +1,4 @@
-import { Avatar, Button, List, Skeleton } from 'antd';
+import { Avatar, List, Skeleton } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { getQuestionsLen, getRankingList } from '../requests';
 import styles from '../styles/List.module.css'
@@ -16,8 +16,6 @@ interface DataType {
 
 export default function RankPage() {
   const [initLoading, setInitLoading] = useState(true);
-  const [loading, setLoading] = useState(false);
-  const [data, setData] = useState<DataType[]>([]);
   const [list, setList] = useState<DataType[]>([]);
   const [questionsNumber, setQuestionsNumber] = useState<number>(1);
 
@@ -34,7 +32,6 @@ export default function RankPage() {
       })
       .then(res => {
         setInitLoading(false);
-        setData(res as DataType[]);
         setList(res as DataType[]);
       });
     getQuestionsLen().then((value) => setQuestionsNumber(value));
