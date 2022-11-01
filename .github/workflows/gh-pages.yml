@@ -27,16 +27,17 @@ jobs:
         run: |
           cd spider && npm install
           npm run start
-      - name: build pages
-        run: |
-          cd web && npm install
-          npm run build
       - name: build beta pages
         run: |
           cd web-beta && npm install
           npm run build
           npm run export
-          mv out ../web/dist/beta
+          mv out ../build
+      - name: build pages
+        run: |
+          cd web && npm install
+          npm run build
+          cp dist ../build/older_version -r
       - name: GitHub Pages
         uses: crazy-max/ghaction-github-pages@v3.0.0
         with:
