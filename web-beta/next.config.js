@@ -3,7 +3,7 @@
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
-  basePath: '/ranking/'
+  basePath: '/ranking'
 }
 
 module.exports = nextConfig
