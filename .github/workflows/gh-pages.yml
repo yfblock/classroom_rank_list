@@ -36,7 +36,7 @@ jobs:
           cd web-beta && npm install
           npm run build
           npm run export
-          mv out ../web/dist/beta
+          mv out ../web/dist
       - name: GitHub Pages
         uses: crazy-max/ghaction-github-pages@v3.0.0
         with:
