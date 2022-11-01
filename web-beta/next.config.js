@@ -3,7 +3,7 @@
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
-  basePath: '/rustlings_ranking/beta'
+  basePath: '/ranking-rustlings/beta'
 }
 
 module.exports = nextConfig
